@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature to Label</title>
+    <script>
+        async function submitFeature() {
+            const feature = document.getElementById("feature").value;
+            const responseDiv = document.getElementById("labelResponse");
+            
+            // Clear any previous response
+            responseDiv.textContent = "Processing...";
+            
+            try {
+                const response = await fetch('https://pd-ml-flask-api.azurewebsites.net/label', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ feature }),
+                });
+                
+                if (response.ok) {
+                    const label = await response.text(); // Since the API returns plain text
+                    responseDiv.textContent = label;
+                } else {
+                    const errorData = await response.json();
+                    responseDiv.textContent = `Error: ${errorData.error || "Unknown error"}`;
+                }
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Feature to Label Converter</h1>
+    <div>
+        <label for="feature">Enter a feature:</label>
+        <input type="text" id="feature" placeholder="Type feature here..." />
+        <button onclick="submitFeature()">Submit</button>
+    </div>
+    <h2>Label:</h2>
+    <div id="labelResponse" style="white-space: pre-wrap; border: 1px solid #ccc; padding: 10px; min-height: 50px;"></div>
+</body>
+</html>
