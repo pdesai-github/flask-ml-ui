@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-app-tax-labels-ui
+  namespace: easy-kart  # Adjust namespace as needed
+spec:
+  replicas: 1  # You can scale this as needed
+  selector:
+    matchLabels:
+      app: ml-app-tax-labels-ui
+  template:
+    metadata:
+      labels:
+        app: ml-app-tax-labels-ui
+    spec:
+      containers:
+      - name: ml-app-tax-labels-ui
+        image: pdesaidocker/ml-classification-tax-labels-ui:{{imageTag}}
+        ports:
+        - containerPort: 80
